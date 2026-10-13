@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>The Darkest Pit</title>
+<meta name="description" content="RPG tático gótico por turnos onde o estresse é tão perigoso quanto o dano.">
+<style>
+:root{--bg:#0c0807;--p:#1b100d;--bl:#5a1a14;--oc:#c8a24d;--gr:#7d9455;--tx:#d9ccae;--m:#8d7d5e;color-scheme:dark;box-sizing:border-box;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--tx);font:16px/1.4 'Palatino Linotype','Book Antiqua',Georgia,serif;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,#000 150%)}
+#app{max-width:520px;margin:auto;padding:10px}
+h1{font-size:30px;color:var(--oc);letter-spacing:3px;font-variant:small-caps;text-shadow:0 0 12px var(--bl);text-align:center;margin:6px 0}
+h2{font-size:17px;color:var(--oc);margin:14px 0 6px;border-bottom:1px solid var(--bl)}
+small{color:var(--m);font-size:12px;display:block}
+.nr{font-style:italic;color:var(--m);margin:8px 0;border-left:3px solid var(--bl);padding-left:8px}
+.bad{color:#c2544a}
+.btn{display:block;width:100%;background:#2a1713;border:2px solid #4a2a20;border-radius:2px;color:var(--tx);font:inherit;padding:10px 6px;min-height:48px;margin:5px 0;box-shadow:inset 0 0 8px #000}
+.btn.pri{border-color:var(--oc)}.btn:disabled{opacity:.35}.btn small{color:var(--oc)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 6px}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:0 4px}
+.card,.u{border:2px solid #3a2118;background:var(--p);padding:6px;margin:5px 0;position:relative}
+.card.sel{border-color:var(--oc)}
+.top{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.top .bar{flex:1;height:10px}
+.bar{height:6px;background:#000;margin:3px 0;border:1px solid #2a1a14;overflow:hidden}.bar i{display:block;height:100%}
+.hp{background:#a02a22}.sb{background:#a8b23c}.tc{background:linear-gradient(90deg,#7a1c14,#e0a63f)}
+.ic{background:none;border:0;font-size:22px;color:var(--tx)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.u{font-size:13px;min-height:78px;margin:0 0 6px}.u b{color:var(--oc)}
+.u.cur{border-color:var(--oc);box-shadow:0 0 10px #c8a24d66}.u.tg{border-color:#e04a3a;animation:pu .9s infinite}
+@keyframes pu{50%{background:#3a1410}}
+#fl{position:fixed;inset:0;pointer-events:none;z-index:9}
+.ft{position:fixed;transform:translateX(-50%);font-weight:bold;white-space:nowrap;text-shadow:0 0 4px #000,0 0 4px #000;animation:up 1.1s forwards;color:#ff6a58}
+.ft.cr{color:#ffd24a;font-size:20px}.ft.s{color:#a8b23c}.ft.h{color:#7fd08a}.ft.m{color:var(--m)}.ft.say{color:var(--tx);font-style:italic;font-weight:normal;background:#000a;padding:1px 6px}
+@keyframes up{to{margin-top:-34px;opacity:0}}
+#fx{position:fixed;inset:0;pointer-events:none;opacity:0;background:#8b1e1e88;z-index:8}#fx.fl{animation:fa .35s}
+@keyframes fa{from{opacity:1}to{opacity:0}}
+.sl{border:2px dashed #3a2118;padding:4px;text-align:center;min-height:88px}.sl.ov{border-color:var(--oc);background:#2a1713}.em{color:var(--m);font-size:12px;padding:20px 0}
+.hb{background:#2a1713;border:2px solid var(--oc);padding:6px 2px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;position:relative;z-index:5;font-size:24px;text-align:center}.hb small{color:var(--tx);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hb.dg{z-index:30;cursor:grabbing;box-shadow:0 0 14px #c8a24d99}
+#hl{display:none;position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;padding:calc(10px + env(safe-area-inset-top,0px)) 10px calc(10px + env(safe-area-inset-bottom,0px))}#hl>div{max-width:520px;margin:auto}#hl .card div{font-size:14px}
+.ft.say{animation-name:sy;white-space:normal;width:max-content;max-width:70vw;text-align:center;font-size:15px}
+@keyframes sy{0%{opacity:0;margin-top:8px}8%{opacity:1;margin-top:0}88%{opacity:1}100%{opacity:0;margin-top:-10px}}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}.sg div{border:1px solid #3a2118;background:var(--p);padding:5px 6px;font-size:14px}.sg b{display:block;color:var(--oc);font-size:11px;font-weight:normal}.ic{padding:2px 6px}
+.sh{animation:sk .3s}@keyframes sk{25%{transform:translate(-6px,3px)}50%{transform:translate(6px,-3px)}75%{transform:translate(-4px,0)}}
+@media(prefers-reduced-motion:reduce){.sh,.u.tg{animation:none}}
+</style></head><body><div id="app"></div><div id="fl"></div><div id="fx"></div><div id="hl"></div>
+<script>
+const $=id=>document.getElementById(id),R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),P=a=>a[R(0,a.length-1)],C=(v,a,b)=>Math.max(a,Math.min(b,v));
+/* ===== DADOS ===== */
+const CL={
+sen:{n:'Sentinela',g:'🛡',hp:34,spd:3,dg:5,ac:0,d:[4,7],cr:5,sk:[{n:'Golpe Pesado',f:'12',t:'12',d:1.2,a:80},{n:'Escudada',f:'12',t:'12',d:.5,a:90,e:'push'},{n:'Marcar Presa',f:'1234',t:'1234',d:0,a:95,e:'mark'},{n:'Voto de Ferro',f:'1234',t:'S',sh:15,h:5}]},
+bes:{n:'Besteiro',g:'🏹',hp:22,spd:6,dg:8,ac:5,d:[5,8],cr:8,sk:[{n:'Virote Certeiro',f:'34',t:'1234',d:1,a:90},{n:'Virote Farpado',f:'34',t:'1234',d:.7,a:85,e:'bleed'},{n:'Tiro Atordoante',f:'234',t:'1234',d:.4,a:70,e:'stun'},{n:'Tiro Cego',f:'12',t:'12',d:.7,a:70}]},
+pen:{n:'Penitente',g:'✝',hp:24,spd:4,dg:3,ac:0,d:[3,5],cr:4,sk:[{n:'Cajado Sagrado',f:'123',t:'12',d:1,a:85},{n:'Bênção de Cinzas',f:'234',t:'A',h:9},{n:'Litania',f:'1234',t:'A',sh:18},{n:'Flagelo',f:'1234',t:'1234',d:.9,a:80,sf:5}]},
+ocu:{n:'Ocultista',g:'🔮',hp:20,spd:5,dg:3,ac:0,d:[4,7],cr:6,sk:[{n:'Chama Fria',f:'234',t:'1234',d:.8,a:85,aoe:1},{n:'Praga Lenta',f:'234',t:'1234',d:.4,a:90,e:'poison'},{n:'Olho Vazio',f:'1234',t:'1234',d:.3,a:75,e:'stun'},{n:'Ruína',f:'34',t:'1234',d:.55,a:75,all:1,sf:6}]},
+lad:{n:'Rastejador',g:'🗡',hp:24,spd:8,dg:15,ac:0,d:[4,6],cr:18,sk:[{n:'Lâmina Rubra',f:'123',t:'123',d:.8,a:90,e:'bleed'},{n:'Golpe nas Costas',f:'234',t:'34',d:1.2,a:75},{n:'Veneno Mudo',f:'123',t:'123',d:.6,a:90,e:'poison'},{n:'Faca Arremessada',f:'1234',t:'1234',d:.5,a:95}]},
+nec:{n:'Necromante',g:'💀',hp:21,spd:4,dg:4,ac:0,d:[3,6],cr:5,sk:[{n:'Lança de Osso',f:'234',t:'1234',d:.9,a:85},{n:'Invocar Esqueleto',f:'1234',t:'A',e:'skel',lb:'guarda um aliado'},{n:'Chamado do Além',f:'1234',t:'S',e:'rev',lb:'1× por missão'},{n:'Maldição Rubra',f:'234',t:'1234',d:.4,a:90,e:'bleed',sf:3}]},
+dem:{n:'Sangue Demoníaco',g:'🩸',g2:'😈',hp:26,spd:4,dg:5,ac:0,d:[3,5],cr:4,sk:[{n:'Transfusão',f:'234',t:'A',h:9},{n:'Pacto Sussurrado',f:'1234',t:'A',sh:16},{n:'Golpe Hesitante',f:'123',t:'12',d:1,a:85},{n:'Despertar a Fera',f:'1234',t:'S',e:'form',sf:8,lb:'vira demônio · +8 😨'}],s2:[{n:'Garra Dilacerante',f:'12',t:'12',d:1.3,a:85,e:'bleed'},{n:'Frenesi',f:'12',t:'12',d:.9,a:80,aoe:1},{n:'Rugido Atroz',f:'1234',t:'12',d:.6,a:80,e:'stun'},{n:'Reprimir a Fera',f:'1234',t:'S',e:'form',sh:10,lb:'volta a ser humano'}]}};
+const DF={dm:.8,spd:2,dg:-6,cr:8,ac:5};
+const EN={
+cul:{n:'Cultista Murmurante',g:'🕯',hp:14,spd:4,dg:5,d:[3,5],p:1,sk:[{n:'Faca Ritual',f:'123',t:'123',d:1,a:80,e:'bleed'},{n:'Murmúrio',f:'1234',t:'1234',d:0,a:90,st:8}]},
+cao:{n:'Cão Esfolado',g:'🐕',hp:12,spd:8,dg:12,d:[3,5],p:2,sk:[{n:'Mordida',f:'1234',t:'123',d:1,a:85,e:'bleed'}]},
+car:{n:'Carniçal Inchado',g:'🧟',hp:28,spd:2,dg:0,d:[4,7],p:1,sk:[{n:'Golpe Podre',f:'12',t:'12',d:1,a:80,e:'poison'},{n:'Abraço Úmido',f:'12',t:'1',d:.7,a:85,e:'stun'}]},
+ara:{n:'Arauto Oco',g:'👁',hp:12,spd:5,dg:8,d:[2,4],p:4,sk:[{n:'Olhar Vazio',f:'1234',t:'1234',d:0,a:95,st:12},{n:'Sussurro',f:'1234',t:'1234',d:.7,a:85}]},
+eco:{n:'Eco',g:'👤',hp:8,spd:6,dg:10,d:[2,3],p:3,sk:[{n:'Lamento',f:'1234',t:'1234',d:.5,a:90,st:6}]},
+bad:{n:'O Badalo',g:'🔔',hp:70,spd:3,dg:0,d:[5,8],p:1,b:1,sk:[{n:'Pancada Fúnebre',f:'1234',t:'12',d:1.1,a:85},{n:'Réquiem',f:'1234',t:'1234',d:.5,a:90,st:8},{n:'Badalada Surda',f:'1234',t:'12',d:.8,a:85,e:'stun'}]}};
+const DN=[{n:'A Cripta dos Sinos',r:6,m:1,pool:['cul','cao','car','ara'],bn:'O Badalo'},{n:'O Ossuário Afogado',r:7,m:1.3,pool:['cul','cao','car','ara','ara'],bn:'O Coro Afogado'},{n:'A Catedral Sem Deus',r:8,m:1.7,pool:['cul','cao','car','car','ara'],bn:'O Sineiro Cego'}];
+const QK={san:{n:'Sanguinário',m:{dm:.15,str:.2}},rob:{n:'Robusto',m:{hp:6,spd:-1}},agi:{n:'Ágil',m:{spd:2,hp:-4}},mao:{n:'Mão Firme',m:{ac:8,dg:-5}},cau:{n:'Cauteloso',m:{dg:8,dm:-.1}},est:{n:'Estoico',m:{str:-.25,ac:-5}},med:{n:'Medroso',m:{str:.25,dg:8}},sor:{n:'Sortudo',m:{cr:6,hp:-3}}};
+const AF={par:{n:'Paranoico',m:{dg:20},l:['Eles estão nas paredes!','Ninguém me engana.','Quem respira aí?']},ego:{n:'Egoísta',m:{},l:['Salvem-se quem puder.','Eu primeiro!','Vocês me atrasam.']},mas:{n:'Masoquista',m:{dm:.25},l:['Mais. Dói bem.','Ah, enfim, dor.','Cortem fundo.']},cru:{n:'Cruel',m:{ac:5},l:['Vocês são fracos.','Cale a boca!','Eu aguento. Vocês, não.']}};
+const GL=['Não olhe para ele.','Quanto falta?','Eu ouço o sino.','Mãe?','Está frio demais.'];
+const RT={c:'⚔ Rumor de passos',t:'🪤 Piso suspeito',r:'💰 Brilho de metal',e:'❓ Sussurros',s:'⛪ Vela acesa'};
+const NR={s:['Entrem. As paredes já sabem seus nomes.','Mais carne para o corredor.','A tocha é um favor que o escuro lhes faz.'],d:['A tocha morre. A coragem, junto.','No escuro, tudo tem dentes.','Não acendam nada. Ele já viu vocês.'],w:['Voltaram. Por pouco. Sempre por pouco.','O sino calou. Por hoje.'],l:['Mais nomes para o muro.','Ninguém volta. Alguns apenas demoram.'],v:['A vila agradece o ouro. Os mortos, nem tanto.','Gastem rápido. A esperança é cara aqui.']};
+const EV=[
+{t:'Um baú de ferro sussurra seus nomes. A fechadura está quente.',c:[['Abrir',[[.55,'Moedas, e algo que brilha demais.',{g:90,r:1}],[.45,'A tampa morde. Algo entra no crânio.',{s:12,h:6}]]],['Deixar',[[1,'Sábio. Ou covarde.',{}]]]]},
+{t:'Um altar de ossos, cercado de velas que ninguém acendeu.',c:[['Ajoelhar',[[.5,'Silêncio. Quase paz.',{s:-20}],[.5,'O altar responde. Não devia.',{s:15}]]],['Profanar',[[.6,'Ouro entre os dentes dos santos.',{g:70}],[.4,'Os santos têm memória.',{s:10,h:5}]]]]},
+{t:'Um explorador morto sorri. Ainda segura a tocha.',c:[['Revistar',[[.5,'Bolsos cheios.',{g:60}],[.3,'A tocha ainda serve.',{tc:25}],[.2,'Ele não estava morto.',{h:7,s:8}]]],['Enterrar',[[1,'Ninguém agradece. Nunca agradecem.',{s:-8}]]]]},
+{t:'Um poço de espelhos. Cada reflexo chega um passo atrasado.',c:[['Olhar',[[.5,'Você se vê inteiro. Mentira doce.',{s:-12}],[.5,'O reflexo sorri primeiro.',{s:14}]]],['Quebrar',[[1,'Sete anos. Ou sete minutos.',{s:5,g:40}]]]]}];
+const NM=['Isolde','Marrow','Vesper','Tobias','Ottilie','Cassian','Wren','Ulrich','Mirela','Dagon','Hester','Bram'];
+/* ===== ESTADO ===== */
+let G,X,scr='vil',EC=0,AC,NC=0;const SV='sinooco1';
+function save(){try{localStorage.setItem(SV,JSON.stringify(G))}catch(e){}}
+function load(){try{let s=localStorage.getItem(SV);if(s)return JSON.parse(s)}catch(e){}return null}
+function mk(c){return{id:'h'+(Math.random()*1e9|0),c,nm:P(NM),lv:0,hp:1,s:0,aff:null,res:0,ck:0,q:Object.keys(QK).sort(()=>Math.random()-.5).slice(0,2)}}
+function fh(h){h.hp=st(h).hp;return h}
+function nw(){G={gold:150,rl:0,day:1,un:1,mu:0,pt:[],b:{h:0,t:0,f:0},ro:[],inv:[],rc:[]};['sen','pen','bes','ocu'].forEach(c=>G.ro.push(fh(mk(c))));G.pt=G.ro.map(h=>h.id);G.rc=gen3();return G}
+G=load()||nw();G.inv=G.inv||[];G.rc=G.rc||gen3();
+function st(h){let c=CL[h.c],o={hp:c.hp+3*h.lv+3*G.b.f,spd:c.spd,dg:c.dg,ac:c.ac,cr:c.cr,dm:1+.07*h.lv+.08*G.b.f,str:1};
+[...h.q.map(k=>QK[k].m),h.aff?AF[h.aff].m:{},h.res?{str:-.5,dm:.15,ac:5}:{},h.c=='dem'&&h.fm?DF:{},...(h.it||[]).map(k=>IT[k].m)].forEach(m=>{for(let x in m)o[x]+=m[x]});o.str=Math.max(.2,o.str);return o}
+const LB={dm:'dano',str:'estresse',hp:'PV',spd:'vel',ac:'prec',dg:'esq',cr:'crít'};
+const qd=m=>Object.keys(m).map(k=>{let v=m[k],p=k=='dm'||k=='str';return(v>0?'+':'')+(p?Math.round(v*100)+'%':v)+' '+LB[k]}).join(', ');
+/* ===== EFEITOS ===== */
+function snd(f,d,t,v){if(G.mu)return;try{AC=AC||new(window.AudioContext||webkitAudioContext)();let o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime;o.type=t||'sawtooth';o.frequency.value=f;g.gain.setValueAtTime(v||.05,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(n+d)}catch(e){}}
+function fl(u,t,c){let e=$('u'+u.id);if(!e)return;let r=e.getBoundingClientRect(),s=document.createElement('span');s.className='ft '+(c||'');s.textContent=t;s.style.left=Math.min(Math.max(r.left+r.width/2,90),innerWidth-90)+'px';s.style.top=(r.top+r.height/3)+'px';let ms=c=='say'?Math.max(2600,t.length*90):1100;if(c=='say'){s.style.animationDuration=ms+'ms';voz(u,t)}$('fl').appendChild(s);setTimeout(()=>s.remove(),ms)}
+const say=(h,t)=>fl(h,'“'+t+'”','say');
+function flash(){let f=$('fx');f.className='';void f.offsetWidth;f.className='fl'}
+function shake(){let a=$('app');a.classList.remove('sh');void a.offsetWidth;a.classList.add('sh');sfx('boom')}
+const log=t=>X.lg.push(t);
+const sd=u=>u.c?X.P:X.E;
+/* ===== ESTRESSE ===== */
+function sx(h,v){if(h.dead)return;v=Math.max(1,Math.round(v*st(h).str*(X.t>=60?.75:X.t<=25?1.5:1)));h.s+=v;sfx('stress');fl(h,'+'+v+' 😨','s');
+if(v>=5&&Math.random()<.5)say(h,P(h.aff?AF[h.aff].l:GL));
+if(h.s>=50&&!h.aff&&!h.res&&!h.ck){h.ck=1;if(Math.random()<.25){h.res=1;say(h,'Eu não vou cair!');log('✦ '+h.nm+' fica RESOLUTO.')}else{h.aff=P(Object.keys(AF));sfx('sting');log('☗ '+h.nm+' sofre de '+AF[h.aff].n+'.');say(h,P(AF[h.aff].l))}}
+if(h.s>=100)colapso(h)}
+function rl(h,v){h.s=Math.max(0,h.s-v);fl(h,'-'+v+' 😌','h');if(h.s<50)h.ck=0}
+function colapso(h){h.s=70;shake();if(Math.random()<.4){log('💔 '+h.nm+' sofre um ATAQUE DO CORAÇÃO!');hurt(h,15)}else{log('😵 '+h.nm+' entra em CRISE e contamina o grupo.');h.sn=1;X.P.forEach(o=>o!=h&&sx(o,7))}}
+function aT(h){let a=h.aff;if(!a||Math.random()>.35)return 0;say(h,P(AF[a].l));let o=P(X.P.filter(x=>x!=h)||[]);
+if(a=='par'){log(h.nm+' paralisa de pavor.');return 1}
+if(a=='ego'){log(h.nm+' xinga os companheiros.');o&&sx(o,7);return 0}
+if(a=='mas'){log(h.nm+' fere a si mesmo.');hurt(h,3);return 0}
+if(a=='cru'&&o){log(h.nm+' agride '+o.nm+'!');hurt(o,R(3,5));sx(o,6);return 1}return 0}
+/* ===== COMBATE ===== */
+function sp(k,m,nm){let e=EN[k],h=Math.round(e.hp*m);return{...e,id:'e'+(++EC),nm:nm||e.n,hp:h,mhp:h,d:e.d.map(v=>Math.round(v*m)),bl:0,ps:0,sn:0,mk:0}}
+function combat(b){let D=DN[X.d],E=[];if(b)E=[sp(['bad','coro','cego'][X.d],D.m,D.bn),sp(['eco','afo','cul'][X.d],D.m)];else{let n=Math.min(4,R(2,3)+(X.ri>2?1:0));for(let i=0;i<n;i++)E.push(sp(P(D.pool),D.m));E.sort((a,c)=>a.p-c.p)}
+X.E=E;X.bs=b;X.cb=1;X.r=0;X.eat=0;X.pl=0;X.P.forEach(h=>{h.bl=h.ps=h.sn=h.mk=0});log(b?'🔔 O sino desperta.':'Inimigos à frente!');scr='cmb';round()}
+function over(){if(!X.cb)return 1;if(!X.E.length){win();return 1}if(!X.P.length){endX(0);return 1}return 0}
+function round(){if(over())return;X.r++;
+if(X.bs&&X.d>0)bm();if(X.bs&&X.d==0){let b=X.E.find(e=>e.b);if(b){log('🔔 O sino toca sem som.');X.P.slice().forEach(h=>sx(h,5));if(X.r%2==0&&X.E.length<4)X.E.push(sp('eco',DN[X.d].m));if(b.hp<b.mhp/2&&!X.eat){X.eat=1;X.t=Math.max(0,X.t-15);log('O sino engole a luz.')}}}
+X.q=[...X.P,...X.E].map(u=>[(u.c?st(u).spd:u.spd)+R(0,7),u]).sort((a,b)=>b[0]-a[0]).map(a=>a[1]);render();setTimeout(nxt,400)}
+function nxt(){if(over())return;let u=X.q.shift();if(!u)return round();if(u.dead)return nxt();X.cu=u;let d=0;
+if(u.bl>0){u.bl--;d+=3}if(u.ps>0){u.ps--;d+=3}if(u.mk>0)u.mk--;
+if(d){log(u.nm+' sofre '+d+' (sangue/veneno).');hurt(u,d);if(u.dead){render();return setTimeout(nxt,500)}}
+if(u.sn){u.sn=0;log(u.nm+' está atordoado.');render();return setTimeout(nxt,600)}
+if(u.c){if(u.c=='dem'&&u.fm)sx(u,4);let t=u.dead||aT(u);if(t||u.dead){render();return setTimeout(nxt,700)}X.pl=1;X.sk=null;render()}else{render();setTimeout(()=>ai(u),600)}}
+function ai(u){if(!X.cb||u.dead)return;let i=X.E.indexOf(u)+1,ks=u.sk.filter(k=>k.f.includes(i));if(!ks.length)ks=u.sk;let k=P(ks),c=X.P.filter((_,j)=>k.t.includes(j+1));if(!c.length)c=X.P;log(u.nm+': '+k.n);act(u,k,P(c));endT()}
+function endT(){X.pl=0;X.sk=null;let u=X.cu;if(u&&u.sq>0&&!u.dead&&X.E.length){log('🦴 O esqueleto ataca.');hit(u,{d:.7,a:85},P(X.E.slice(0,2)))}render();setTimeout(nxt,650)}
+function act(u,k,x){let h=u.c;
+if(k.t=='A'||k.t=='S'){x=k.t=='S'?u:x;if(k.h){let n=Math.max(0,Math.min(k.h+u.lv,st(x).hp-x.hp));x.hp+=n;fl(x,'+'+n,'h')}if(k.sh)rl(x,k.sh);if(k.e=='skel'){u.sq=u.sq>0?u.sq:12+3*u.lv;u.sg=x.id;log('🦴 O esqueleto de '+u.nm+' passa a guardar '+(x==u?'o próprio necromante':x.nm)+'.')}if(k.e=='rev')revive(u);if(k.e=='form'){u.fm=u.fm?0:1;if(u.fm){log('😈 '+u.nm+' abraça o sangue demoníaco!');X.P.forEach(o=>o!=u&&sx(o,3));shake()}else log('🩸 '+u.nm+' recupera a forma humana.')}sfx('heal')}
+else{let F=h?X.E:X.P,ts=k.all?[...F]:k.aoe?[x,F[F.indexOf(x)+1]].filter(Boolean):[x];ts.forEach(y=>hit(u,k,y))}
+if(k.sf&&!u.dead)sx(u,k.sf)}
+function hit(u,k,y){let h=u.c,s=h?st(u):u,ys=y.c?st(y):y;
+if(R(1,100)>C((k.a||85)+(s.ac||0)+(h&&X.t>=60?5:0)-ys.dg,5,95)){fl(y,'Erra','m');sfx('miss');return}
+let cr=0;if(k.d){cr=R(1,100)<=(s.cr||5)+(h&&u.c=='lad'&&X.P.indexOf(u)>0?7:0);let b=h?R(...CL[u.c].d):R(...u.d);hurt(y,Math.max(1,Math.round(b*k.d*(s.dm||1)*(y.mk>0?1.3:1)*(cr?1.5:1)*(!h&&X.t<=25?1.2:1))),cr);if(y.dead)return}
+let e=k.e;if(e=='bleed')y.bl=3;if(e=='poison')y.ps=4;if(e=='stun')y.sn=1;if(e=='mark')y.mk=3;if(e=='push')mv(y,1);if(e=='pull')mv(y,-1);if(h&&k.d&&u.it)u.it.forEach(i=>{let f=IT[i].f;if(f=='bl')y.bl=3;if(f=='ps')y.ps=4});
+if(y.c){if(k.st)sx(y,k.st);if(cr)sx(y,8)}}
+const off=(k,u)=>k.e=='rev'&&(X.rv||!X.fd.length);
+function revive(u){let h=X.fd.pop();h.dead=0;h.hp=Math.max(1,Math.round(st(h).hp*.4));h.s=Math.min(90,h.s+20);h.sn=1;h.bl=h.ps=h.mk=0;X.P.splice(Math.min(h.lp,X.P.length),0,h);X.rv=1;log('☥ '+u.nm+' arranca '+h.nm+' da morte.');setTimeout(()=>{fl(h,'☥ Revive','h');say(h,'Eu... voltei?')},60)}
+function mv(y,d){let S=sd(y),i=S.indexOf(y),j=i+d;if(j<0||j>=S.length)return;[S[i],S[j]]=[S[j],S[i]]}
+function hurt(y,d,cr){let n=gd(y);if(n){let a=Math.min(n.sq,d);n.sq-=a;d-=a;fl(y,'🦴-'+a,'m');if(!n.sq)log('🦴 O esqueleto desmorona.');if(d<=0)return}y.hp-=d;fl(y,'-'+d,cr?'cr':'');if(y.c)flash();sfx(y.c?'hurt':'hit');if(cr)shake();if(y.hp<=0)kill(y)}
+function kill(y){y.dead=1;let S=sd(y),i=S.indexOf(y);S.splice(i,1);if(y.c){y.lp=i;X.fd.push(y)}log('☠ '+y.nm+' cai.');sfx('die');if(y.c)X.P.forEach(o=>sx(o,10))}
+function win(){X.cb=0;let D=DN[X.d],dk=X.t<=25,g=Math.round(R(35,65)*D.m*(dk?1.5:1)),r=Math.random()<(dk?.5:.3)?1:0;
+if(X.bs){g+=Math.round(150*D.m);r+=2+X.d}X.g+=g;X.rl+=r;if(X.bs)return endX(1);
+(Math.random()<.5?offer:scn)('Silêncio. O corredor cobra sua parte: +'+g+'💰'+(r?' +'+r+'🗿':'')+(dk?' (o escuro paga melhor)':'')+'.')}
+/* ===== EXPEDIÇÃO ===== */
+const fs=e=>[e.g&&'+'+e.g+'💰',e.r&&'+'+e.r+'🗿',e.tc&&'+'+e.tc+'🔥',e.s&&(e.s>0?'+':'')+e.s+'😨',e.h&&'-'+e.h+' PV'].filter(Boolean).join(' ');
+function fx(o){if(o.g)X.g+=o.g;if(o.r)X.rl+=o.r;if(o.tc)X.t=Math.min(100,X.t+o.tc);if(o.s)X.P.slice().forEach(h=>o.s>0?sx(h,o.s):rl(h,-o.s));if(o.h&&X.P.length)hurt(P(X.P),o.h)}
+function scn(t,o){if(!X.P.length)return endX(0);X.sc={t,o:o||[['Seguir','nx']]};scr='sc';render()}
+const gen=()=>{X.dr=[P('cccteers'),P('cccteers')]};
+function endX(m){NS=[];X.cb=0;let ok=m==1,g=X.P.length||m?X.g:0,r=X.P.length||m?X.rl:0;if(ok)G.un=Math.max(G.un,Math.min(3,X.d+2));let bi=ok?P(Object.keys(IT)):0;if(bi)G.inv.push(bi);
+G.gold+=g;G.rl+=r;G.ro.forEach(h=>{h.sq=0;h.fm=0;h.res=0;h.ck=0;h.bl=h.ps=h.sn=h.mk=0;if(ok&&!h.dead&&X.P.includes(h)){h.lv=Math.min(5,h.lv+1);al(h).filter(k=>k.lv==h.lv).forEach(k=>NS.push(h.nm+' aprendeu '+k.n))}});
+let dd=G.ro.filter(h=>h.dead).map(h=>h.nm);G.ro=G.ro.filter(h=>!h.dead);G.pt=X.P.map(h=>h.id);G.day++;G.rc=gen3();G.sh=gsh();if(!G.ro.length&&G.gold<100)G.gold=100;save();sfx(m==1?'win':'lose');X.sm={m,dd,g,r,bi,ns:NS};scr='end';render()}
+const A={
+go(i){let P2=G.pt.map(id=>G.ro.find(h=>h.id==id)).filter(Boolean);if(!P2.length)return;X={d:+i,ri:0,t:100,g:0,rl:0,P:P2,E:[],fd:[],rv:0,cb:0,lg:[],nr:P(NR.s)};gen();scr='map';render()},
+door(t){X.t=Math.max(0,X.t-11);if(X.t<=25){X.nr=P(NR.d);X.P.slice().forEach(h=>sx(h,4))}X.ri++;({c:()=>combat(0),b:()=>combat(1),t:trap,r:tre,e:evt,s:shr})[t]()},
+nx(){if(!X.P.length)return endX(0);gen();scr='map';render()},
+rt(){endX(2)},vl(){scr='vil';render()},
+sk(i){if(!X.pl)return;let u=X.cu,k=sks(u)[i];if(!k||!k.f.includes(X.P.indexOf(u)+1)||off(k,u))return;if(k.t=='S'){log(u.nm+': '+k.n);act(u,k,u);endT()}else{X.sk=k;render()}},
+tg(v){if(!X.pl||!X.sk)return;let k=X.sk,i=+v.slice(1),u=X.cu;
+if(v[0]=='h'){if(k.t!='A')return;act(u,k,X.P[i])}else{if(k.t=='A'||k.t=='S'||!k.t.includes(i+1))return;act(u,k,X.E[i])}log(u.nm+': '+k.n);endT()},
+mv(d){if(!X.pl)return;log(X.cu.nm+' muda de posição.');mv(X.cu,+d);endT()},ps(){if(X.pl)endT()},
+fg(){if(!X.pl)return;if(X.bs){log('Não há para onde fugir.');return render()}
+if(Math.random()<.6){X.cb=0;X.P.slice().forEach(h=>sx(h,6));scn('Fugiram. A vergonha pesa menos que o aço.')}else{log('A fuga falha.');endT()}},
+ch(i){let o=X.ev.c[i][1],r=Math.random(),a=0,w=o[o.length-1];for(let q of o){a+=q[0];if(r<a){w=q;break}}fx(w[2]);scn(w[1]+' '+fs(w[2]))},
+sh(i){if(i==0)fx({s:-20});if(i==1)X.P.forEach(h=>{let m=st(h).hp;h.hp=Math.min(m,h.hp+Math.round(m*.3))});if(i==2)fx({tc:25});scn(['A prece é ouvida. Por algo.','Ataduras limpas. Raridade.','A chama volta. Frágil, como vocês.'][i])},
+hp(v){if(v!=null&&v!=='')HT=+v;$('hl').innerHTML=helpHTML();$('hl').style.display='block';$('hl').scrollTop=0},hx(){$('hl').style.display='none'},
+vt(v){VT=+v;if(VT==2)ljsay(P(LJL.hi));render()},rr(){if(G.gold<30)return;G.gold-=30;G.rc=gen3();save();render()},
+hire(i){let h=G.rc[i];if(!h||G.gold<100||G.ro.length>=8)return;G.gold-=100;G.ro.push(h);G.rc.splice(i,1);save();render()},
+ld(id){VX=VX==id?null:id;render()},
+sl(v){let[id,i]=v.split(':'),h=G.ro.find(x=>x.id==id),a=al(h);h.eq=h.eq||[0,1,2,3];let c=h.eq[i],n=c;for(let j=1;j<a.length;j++){let k=(c+j)%a.length;if(!h.eq.includes(k)&&(a[k].lv||0)<=h.lv){n=k;break}}h.eq[i]=n;save();render()},
+eq(v){let[id,i]=v.split(':'),h=G.ro.find(x=>x.id==id);h.it=h.it||[];let o=h.it[i];if(o){G.inv.push(o);h.it.splice(i,1)}else if(G.inv.length&&h.it.length<2)h.it.push(G.inv.shift());h.hp=Math.min(h.hp,st(h).hp);save();render()},
+pk(k){scn('Quem leva '+IT[k].n+'? ('+idesc(k)+')',X.P.map((h,i)=>[gl(h)+' '+h.nm+' · '+(h.it||[]).length+'/2 itens','gv',k+':'+i]))},
+gv(v){let[k,i]=v.split(':'),h=X.P[+i];give(h,k);h.hp=Math.min(h.hp,st(h).hp);scn(IT[k].n+' agora pertence a '+h.nm+'.')},
+fc(id){let u=[...G.ro,...G.rc,...(X?X.E:[])].find(x=>x.id==id);if(!u)return;$('hl').innerHTML=sheet(u);$('hl').style.display='block';$('hl').scrollTop=0},
+buy(k){let p=pr(k);if(G.gold<p||!G.sh.includes(k))return;G.gold-=p;G.sh.splice(G.sh.indexOf(k),1);G.inv.push(k);save();ljsay(P(LJL.buy));render()},
+sell(i){let k=G.inv[i];if(!k)return;G.gold+=sl(k);G.inv.splice(i,1);save();ljsay(P(LJL.sell));render()},
+mu(){G.mu^=1;save();render()},
+pt(id){let i=G.pt.indexOf(id);if(i>=0)G.pt.splice(i,1);else if(G.pt.length<4)G.pt.push(id);render()},
+rec(){if(G.gold<100||G.ro.length>=8)return;G.gold-=100;G.ro.push(fh(mk(P(Object.keys(CL)))));save();render()},
+heal(id){let h=G.ro.find(x=>x.id==id),c=Math.max(10,40-8*G.b.h);if(G.gold<c)return;G.gold-=c;h.hp=st(h).hp;save();render()},
+tav(id){let h=G.ro.find(x=>x.id==id);if(G.gold<50)return;G.gold-=50;h.s=Math.max(0,h.s-35-10*G.b.t);h.ck=0;save();render()},
+cure(id){let h=G.ro.find(x=>x.id==id);if(G.gold<80)return;G.gold-=80;h.aff=null;h.ck=0;save();render()},
+up(k){let l=G.b[k],g=(l+1)*120,r=(l+1)*2;if(l>=3||G.gold<g||G.rl<r)return;G.gold-=g;G.rl-=r;G.b[k]++;save();render()},
+nw(){if(!NC){NC=1;render();setTimeout(()=>{if(NC){NC=0;if(scr=='vil')render()}},4000);return}NC=0;nw();save();scr='vil';render();window.scrollTo(0,0)}};
+function trap(){let l=X.P.find(h=>h.c=='lad'),m=DN[X.d].m;if(l&&Math.random()<.75)return scn('Lâminas no piso. '+l.nm+' sorri e as desarma. Alguém aqui sabe o que faz.');
+let d=Math.round(R(5,9)*m);hurt(P(X.P),d);X.P.slice().forEach(h=>sx(h,8));scn('Estalo seco. O chão mastiga: -'+d+' PV num herói e +8😨 ao grupo.')}
+function tre(){let g=Math.round(R(40,80)*DN[X.d].m*(X.t<=25?1.5:1)),r=Math.random()<.35?1:0;fx({g,r});(Math.random()<.5?offer:scn)('Restos de outra expedição. Ninguém reclamou. '+fs({g,r}))}
+function evt(){let e=P(EV);X.ev=e;scn(e.t,e.c.map((c,i)=>[c[0],'ch',i]))}
+function shr(){scn('Uma vela acesa onde nada deveria queimar. Uma bênção, uma só.',[['Rezar (-20😨)','sh',0],['Atar feridas (+30% PV)','sh',1],['Reacender tocha (+25🔥)','sh',2]])}
+/* ===== ARRASTAR FORMAÇÃO ===== */
+const fm0=()=>'<h2>Expedições (grupo: '+G.pt.length+'/4)</h2>';
+let DG=null;
+const slAt=(x,y)=>[...document.querySelectorAll('#fm .sl')].findIndex(e=>{let r=e.getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top-24&&y<=r.bottom+24});
+const dgm=e=>{if(!DG)return;let dx=e.clientX-DG.x,dy=e.clientY-DG.y;if(Math.abs(dx)+Math.abs(dy)>6)DG.m=1;DG.b.style.transform=`translate(${dx}px,${dy}px) scale(1.08)`;let i=slAt(e.clientX,e.clientY);document.querySelectorAll('#fm .sl').forEach((s,j)=>s.classList.toggle('ov',!!DG.m&&j==i))};
+const dgu=e=>{if(!DG)return;let d=DG,i=slAt(e.clientX,e.clientY),p=G.pt.indexOf(d.id);DG=null;
+if(d.m&&i>=0&&i!=p&&p>=0){if(i>=G.pt.length)G.pt.push(G.pt.splice(p,1)[0]);else[G.pt[p],G.pt[i]]=[G.pt[i],G.pt[p]];save();sfx('tap')}render()};
+$('app').addEventListener('pointerdown',e=>{let b=e.target.closest('.hb');if(!b)return;e.preventDefault();DG={b,id:b.dataset.id,x:e.clientX,y:e.clientY,m:0};try{b.setPointerCapture(e.pointerId)}catch(x){}b.classList.add('dg')});
+$('app').addEventListener('pointermove',dgm);$('app').addEventListener('pointerup',dgu);$('app').addEventListener('pointercancel',dgu);
+/* ===== GRIMÓRIO ===== */
+const EF={bleed:'🩸 sangramento: 3 PV/turno por 3 turnos',poison:'☠ veneno: 3 PV/turno por 4 turnos',stun:'💫 atordoa: o alvo perde o próximo turno',mark:'🎯 marca: o alvo sofre +30% de dano por 3 turnos',push:'empurra o alvo 1 posição para trás',pull:'puxa o alvo 1 posição para a frente',skel:'🦴 invoca um esqueleto na sua posição: ele absorve o dano que você sofreria (12 PV +3 por nível), segue você ao mudar de lugar e ataca um inimigo das posições 1–2 no fim do seu turno',rev:'☥ revive o último herói caído com 40% de PV, atordoado e com +20 😨 (1× por missão)'};
+const AFD={par:'35% de chance de paralisar de pavor e perder o turno; +20 esquiva.',ego:'35% de chance de xingar o grupo: +7 😨 em um aliado.',mas:'35% de chance de se ferir (3 PV); +25% de dano.',cru:'35% de chance de agredir um aliado (3–5 PV, +6 😨) e perder o turno; +5 precisão.'};
+const pl=s=>s.split('').join('/');
+const sde=k=>[`pos. ${pl(k.f)} → ${k.t=='A'?'aliado':k.t=='S'?'si':pl(k.t)}`,k.d?'dano ×'+k.d:'',k.a?k.a+'% prec.':'',k.aoe?'atinge também o inimigo de trás':'',k.all?'atinge todos':'',k.h?'cura '+k.h+' PV (+nível)':'',k.sh?'alivia '+k.sh+' 😨':'',k.st?'causa '+k.st+' 😨':'',k.sf?'custa '+k.sf+' 😨 a quem usa':'',EF[k.e]||''].filter(Boolean).join(' · ');
+const RG=[['Formação','4 posições por lado; 1 = frente. Cada habilidade só funciona de certas posições e atinge posições específicas (veja em cada botão). ⬆⬇ trocam de lugar com o vizinho.'],['Turnos','Iniciativa a cada rodada = velocidade + d8.'],['Acerto e crítico','Chance = precisão da habilidade + bônus − esquiva do alvo (mín. 5%, máx. 95%). Crítico causa ×1,5.'],['Estresse 😨','Sobe com críticos inimigos, ataques de estresse, mortes de aliados, armadilhas, escuridão e eventos. Aos 50: 75% de uma Aflição, 25% de ficar Resoluto. Aos 100: Colapso (40% ataque do coração = 15 de dano; 60% crise = perde o turno e +7 😨 nos aliados) e volta a 70.'],['Tocha 🔥','Cai 11 por sala. ≥60 luz firme: estresse ×0,75 e +5 de precisão. ≤25 escuridão: estresse ×1,5, inimigos +20% de dano e +4 😨 por sala, mas ouro ×1,5 e mais relíquias.'],['Salas','Combate, armadilha (Rastejador desarma 75%), tesouro, evento, santuário. A última é o chefe. Fugir: 60% de chance e +6 😨; impossível contra chefes.'],['Morte','Herói a 0 PV morre para sempre (salvo se revivido). Quem sobrevive e vence a masmorra sobe 1 nível.'],['Vila','🏥 Hospital: cura 40💰 (−8 por nível) e trata aflição por 80💰. 🍺 Taverna: 50💰, −35 😨 (+10 por nível). ⚒ Forja: +8% dano e +3 PV por nível.']];
+const IC=[['🔥 Tocha','Luz do grupo (0–100). Cai 11 por sala.'],['😨 / 😌','Estresse ganho / estresse aliviado. Barra verde-doente = estresse, barra vermelha = PV.'],['☗ Aflição','Condição negativa que fica até ser tratada no hospital.'],['✦ Resoluto','Até o fim da expedição: estresse −50%, +15% dano, +5 precisão.'],['🩸 ☠ 💫 🎯 🦴','Sangramento, veneno, atordoado, marcado, esqueleto (número = PV dele).'],['💰 🗿','Ouro e relíquias: pagam melhorias na vila.'],['⬆ ⬇ ⏭ 🏃','Avançar, recuar, passar a vez, fugir.'],['⚔ 🪤 💰 ❓ ⛪ ☠','Salas: combate, armadilha, tesouro, evento, santuário, chefe.'],['Classes',Object.values(CL).map(c=>c.g+' '+c.n).join(', ')],['💔 😵 ☥','Ataque do coração, crise de pânico, herói revivido.'],['🔊 / 🔇','Liga ou desliga o som.']];
+let HT=0;const TB=['Regras','Ícones','Classes','Inimigos'];
+const rw=(a,b)=>`<div class=card><b>${a}</b><div>${b}</div></div>`;
+function helpHTML(){let b=HT==0?RG.map(([a,c])=>rw(a,c)).join('')+'<h2>Aflições</h2>'+Object.keys(AF).map(k=>rw('☗ '+AF[k].n,AFD[k])).join('')+rw('✦ Resoluto','Estresse −50%, +15% dano, +5 precisão até o fim da expedição.')+'<h2>Traços</h2>'+Object.values(QK).map(q=>rw(q.n,qd(q.m))).join(''):HT==1?IC.map(([a,c])=>rw(a,c)).join(''):HT==2?Object.values(CL).map(c=>`<h2>${c.g} ${c.n}</h2><small>PV ${c.hp} · vel ${c.spd} · esq ${c.dg} · crít ${c.cr}% · dano ${c.d[0]}–${c.d[1]}</small>`+c.sk.map(k=>rw(k.n,sde(k))).join('')+(c.s2?'<h2>'+c.g2+' Forma demoníaca</h2>'+rw('Efeitos da forma','+80% de dano, +2 vel, +8 crít, +5 prec., −6 esq.; +4 😨 por turno em forma demoníaca. Quem desperta a fera gasta 8 😨 e os aliados ganham +3 😨.')+c.s2.map(k=>rw(k.n,sde(k))).join(''):'')).join(''):Object.values(EN).map(e=>`<h2>${e.g} ${e.n}${e.b?' (chefe)':''}</h2><small>PV ${e.hp} · vel ${e.spd} · esq ${e.dg} · dano ${e.d[0]}–${e.d[1]} (× perigo da masmorra)</small>`+e.sk.map(k=>rw(k.n,sde(k))).join('')).join('')+rw('🔔 Mecânica dos chefes','1ª, O Badalo: a cada rodada o sino toca (+5 😨 em todos, menos com luz firme). A cada 2 rodadas invoca um Eco. Abaixo de 50% de PV, engole 15 de tocha. 2ª, Coro Afogado: a cada rodada a maré afoga quem está nas posições 3–4 (−3 PV, +3 😨) e a cada 3 rodadas a correnteza embaralha o grupo. 3ª, Sineiro Cego: consome 8 de tocha por rodada, marca um herói aleatório (+30% de dano recebido, +5 😨) e chama um Cultista a cada 3 rodadas.');
+return `<div><div class=top><h2 style="border:0;margin:0">📖 Grimório</h2><button class=ic data-a=hx>✕</button></div><div class=g4>${TB.map((t,i)=>`<button class="btn${i==HT?' pri':''}" style="font-size:13px;padding:4px" data-a=hp data-v=${i}>${t}</button>`).join('')}</div>${b}<button class=btn data-a=hx>Fechar</button></div>`}
+/* ===== EXTRAS ===== */
+const gl=h=>h.c=='dem'&&h.fm?CL.dem.g2:CL[h.c].g;
+const sks=u=>u.c=='dem'?(u.fm?CL.dem.s2:CL.dem.sk):(u.eq||[0,1,2,3]).map(i=>al(u)[i]);
+const gd=y=>y.c?X.P.find(o=>o.sq>0&&o.sg==y.id):0;
+EF.skel='🦴 escolha um aliado (ou o próprio Necromante): o esqueleto passa a guardá-lo e absorve o dano que ele sofreria (12 PV +3 por nível). Ataca um inimigo das posições 1–2 no fim do turno do Necromante. Usar de novo troca o protegido sem curar o esqueleto.';
+EF.form='😈 alterna entre forma humana (suporte) e demoníaca (berserker); gasta o turno. Aliados ganham +3 😨 quando a fera desperta.';
+RG.push(['Rastejador oculto','Crítico base alto (18%) e +7% enquanto está fora da posição 1, escondido atrás do grupo.']);
+IC.push(['🩸 / 😈','Sangue Demoníaco: forma humana (suporte) / forma demoníaca (berserker). O ícone muda com a forma.']);
+/* ===== ÁUDIO ===== */
+let MB,MZ,RV,NB,MX,MT=0,NT=0,SI=0,LS=0;
+function ax(){if(AC)return AC;try{AC=new(window.AudioContext||webkitAudioContext)();let c=AC.createDynamicsCompressor();c.threshold.value=-16;c.ratio.value=5;c.connect(AC.destination);MB=AC.createGain();MB.gain.value=.9;MB.connect(c);MZ=AC.createGain();MZ.gain.value=.55;MZ.connect(MB);
+RV=AC.createConvolver();let n=AC.sampleRate*1.8|0,b=AC.createBuffer(2,n,AC.sampleRate);for(let k=0;k<2;k++){let d=b.getChannelData(k);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.8)}RV.buffer=b;let rg=AC.createGain();rg.gain.value=.25;RV.connect(rg);rg.connect(MB)}catch(e){AC=null}if(AC&&AC.state=='suspended')AC.resume();return AC}
+function snd(f,d,t,v,p){if(G.mu||!ax())return;try{let n=AC.currentTime,o=AC.createOscillator(),g=AC.createGain(),l=AC.createBiquadFilter();o.type=t||'sawtooth';o.frequency.value=f;l.type='lowpass';l.frequency.value=Math.max(900,f*6);g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(v||.05,n+.006);g.gain.exponentialRampToValueAtTime(.0008,n+d);o.connect(l);l.connect(g);g.connect(MB);g.connect(RV);o.start(n);o.stop(n+d+.02)}catch(e){}}
+function sw(f1,f2,d,ty,v,t){if(G.mu||!ax())return;try{let n=t||AC.currentTime,o=AC.createOscillator(),g=AC.createGain(),l=AC.createBiquadFilter();o.type=ty;o.frequency.setValueAtTime(f1,n);o.frequency.exponentialRampToValueAtTime(f2,n+d);l.type='lowpass';l.frequency.value=2600;g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(v,n+.005);g.gain.exponentialRampToValueAtTime(.0008,n+d);o.connect(l);l.connect(g);g.connect(MB);g.connect(RV);o.start(n);o.stop(n+d+.02)}catch(e){}}
+function nz(d,v,f1,f2,ty,t){if(G.mu||!ax())return;try{let n=t||AC.currentTime;if(!NB){NB=AC.createBuffer(1,AC.sampleRate,AC.sampleRate);let a=NB.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1}
+let s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();s.buffer=NB;s.loop=true;f.type=ty||'lowpass';f.frequency.setValueAtTime(f1,n);f.frequency.exponentialRampToValueAtTime(Math.max(40,f2),n+d);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.0008,n+d);s.connect(f);f.connect(g);g.connect(MB);g.connect(RV);s.start(n,Math.random()*.5);s.stop(n+d+.02)}catch(e){}}
+function ns(f,t,d,ty,v,at){let o=AC.createOscillator(),o2=AC.createOscillator(),g=AC.createGain(),l=AC.createBiquadFilter();o.type=o2.type=ty;o.frequency.value=o2.frequency.value=f;o2.detune.value=8;l.type='lowpass';l.frequency.value=Math.min(7000,f*4+500);
+g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+(at||.012));g.gain.exponentialRampToValueAtTime(v*.5,t+d*.7);g.gain.linearRampToValueAtTime(0,t+d);o.connect(l);o2.connect(l);l.connect(g);g.connect(MZ);g.connect(RV);o.start(t);o2.start(t);o.stop(t+d+.02);o2.stop(t+d+.02)}
+const SFX={tap:()=>{snd(660,.05,'square',.025);snd(990,.04,'triangle',.02)},
+hit:()=>{nz(.12,.2,3000,300);sw(220,70,.12,'square',.07)},
+hurt:()=>{nz(.2,.28,2200,200);sw(160,45,.28,'sawtooth',.09)},
+miss:()=>nz(.14,.08,5000,1200,'bandpass'),
+die:()=>{nz(.7,.3,1500,80);sw(140,30,.7,'sawtooth',.1);sw(70,25,.9,'triangle',.12)},
+boom:()=>{sw(110,35,.4,'square',.1);nz(.35,.25,900,60)},
+heal:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>snd(f,.35,'triangle',.05),i*70)),
+stress:()=>{let t=Date.now();if(t-LS<300)return;LS=t;sw(300,150,.4,'sawtooth',.04);sw(317,160,.4,'sawtooth',.04)},
+sting:()=>[220,233,311].forEach(f=>snd(f,.9,'sawtooth',.03)),
+win:()=>[392,494,587,784].forEach((f,i)=>setTimeout(()=>snd(f,.5,'square',.04),i*140)),
+lose:()=>[294,277,262,196].forEach((f,i)=>setTimeout(()=>snd(f,.7,'triangle',.07),i*260))};
+const sfx=k=>SFX[k]&&SFX[k]();
+const mf=n=>440*Math.pow(2,(n-69)/12);
+const CH={Dm:[38,[0,3,7]],Bb:[34,[0,4,7]],Gm:[31,[0,3,7]],A:[33,[0,4,7]]};
+const MSC=[
+{b:78,pd:0,pr:'Dm Bb Gm A Dm Bb Gm A'.split(' '),me:[74,0,77,76,74,0,69,0, 70,0,74,72,70,0,65,0, 67,0,70,0,74,72,70,0, 69,0,73,76,81,0,76,0, 77,0,81,0,79,77,74,0, 77,0,74,0,72,0,70,0, 74,0,72,0,70,0,67,0, 73,76,77,76,73,0,69,0]},
+{b:152,pd:1,pr:'Dm Dm Bb A Dm Dm Gm A'.split(' '),me:[74,77,81,77,74,77,81,84, 82,81,77,74,81,77,74,72, 70,74,77,74,70,74,77,82, 81,76,73,76,81,76,73,76, 74,77,81,77,86,84,81,77, 82,81,79,77,76,74,73,0, 79,74,70,74,79,74,82,79, 81,76,73,69,81,76,73,69]}];
+function step(m,i,t){let s=i&7,c=CH[m.pr[i>>3]],e=30/m.b,x=m.me[i],f=m.pd;
+if(x)ns(mf(x),t,e*(f?1.7:2.4),'square',f?.05:.042,.01);
+if(f||s%4==0)ns(mf(c[0]+12+(f&&s&1?12:0)),t,e*(f?.95:3.7),'triangle',.13,.01);
+if(s&1)ns(mf(c[0]+24+c[1][(s>>1)%3]),t,e*(f?.8:1.6),f?'sawtooth':'triangle',f?.018:.03);
+if(!f&&s==0)c[1].forEach(v=>ns(mf(c[0]+24+v),t,e*8,'sawtooth',.011,.7));
+if(f){if(s%4==0)sw(170,45,.14,'sine',.22,t);if(s%4==2){nz(.12,.13,3600,1400,'bandpass',t);sw(260,130,.08,'triangle',.06,t)}nz(.04,s&1?.03:.05,9000,6500,'highpass',t)}
+else if(s<2)sw(110,42,.32,'sine',s?.07:.12,t)}
+function msc(){if(!AC)return;let n=AC.currentTime,m=MSC[MT];if(NT<n-.1)NT=n+.05;while(NT<n+.4){if(!G.mu)step(m,SI,NT);NT+=30/m.b;SI=(SI+1)%(m.pr.length*8)}}
+function mst(){if(!ax())return;if(AC.state=='suspended')AC.resume();if(!MX)MX=setInterval(msc,100)}
+function mus(t){if(t!=MT){MT=t;SI=0}}
+/* ===== RECRUTAS, ITENS, HABILIDADES, CHEFES ===== */
+let VT=0,VX=null,NS=[];
+const IT={cut:{n:'Cutelo Enferrujado',g:'🪓',m:{dm:.25,spd:-2}},cap:{n:'Capa de Gralha',g:'🧥',m:{dg:10,hp:-4}},len:{n:'Lente Rachada',g:'🔍',m:{ac:10,str:.15}},ane:{n:'Anel de Ossos',g:'💍',m:{hp:8,dm:-.05}},ter:{n:'Terço Partido',g:'📿',m:{str:-.3,ac:-5}},bot:{n:'Botas de Corvo',g:'🥾',m:{spd:3,hp:-3}},den:{n:'Dente de Lobo',g:'🦷',m:{cr:10,dg:-3}},gar:{n:'Garrafa Escura',g:'🍶',m:{hp:10,spd:-1}},bld:{n:'Lâmina Sangrenta',g:'🔪',m:{dm:-.05},f:'bl',fd:'ataques com dano causam sangramento'},ven:{n:'Frasco Peçonhento',g:'🧪',m:{hp:-3},f:'ps',fd:'ataques com dano envenenam'},cor:{n:'Coroa de Espinhos',g:'👑',m:{dm:.35,str:.35}},sap:{n:'Pele de Sapo',g:'🐸',m:{dg:6,hp:6,spd:-1}}};
+const idesc=k=>[IT[k].m&&qd(IT[k].m),IT[k].fd].filter(Boolean).join(' · ');
+const EX={sen:[{n:'Gancho Sombrio',f:'1234',t:'34',d:.6,a:80,e:'pull',lv:1},{n:'Golpe Esmagador',f:'1',t:'1',d:1.8,a:70,sf:4,lv:3}],bes:[{n:'Chuva de Virotes',f:'34',t:'1234',d:.45,a:75,all:1,sf:3,lv:1},{n:'Virote Peçonhento',f:'34',t:'1234',d:.6,a:85,e:'poison',lv:3}],pen:[{n:'Mão Piedosa',f:'234',t:'A',h:14,sf:6,lv:1},{n:'Absolvição',f:'1234',t:'A',sh:28,sf:4,lv:3}],ocu:[{n:'Lança Fantasma',f:'34',t:'1234',d:1.3,a:80,sf:3,lv:1},{n:'Marca do Vazio',f:'234',t:'1234',d:.3,a:90,e:'mark',lv:3}],lad:[{n:'Estocada Sorrateira',f:'234',t:'12',d:1.4,a:70,lv:1},{n:'Poeira nos Olhos',f:'1234',t:'1234',d:.2,a:85,e:'stun',lv:3}],nec:[{n:'Toque Gélido',f:'1234',t:'12',d:.7,a:90,e:'bleed',lv:1},{n:'Pacto de Ossos',f:'234',t:'1234',d:.8,a:80,e:'mark',lv:3}]};
+const al=h=>CL[h.c].sk.concat(EX[h.c]||[]);
+function gen3(){return Object.keys(CL).sort(()=>Math.random()-.5).slice(0,3).map(c=>fh(mk(c)))}
+function give(h,k){h.it=h.it||[];if(h.it.length>=2)G.inv.push(h.it.shift());h.it.push(k)}
+function offer(t){scn(t+' Algo reluz entre os restos.',Object.keys(IT).sort(()=>Math.random()-.5).slice(0,3).map(k=>[IT[k].g+' '+IT[k].n+' · '+idesc(k),'pk',k]).concat([['Deixar para trás','nx']]))}
+Object.assign(EN,{afo:{n:'Afogado',g:'💧',hp:16,spd:4,dg:4,d:[3,5],p:2,sk:[{n:'Abraço Frio',f:'1234',t:'12',d:1,a:80,e:'stun'},{n:'Gorgolejo',f:'1234',t:'1234',d:0,a:90,st:7}]},
+coro:{n:'O Coro Afogado',g:'🌊',hp:70,spd:3,dg:0,d:[4,7],p:1,b:1,sk:[{n:'Vagalhão',f:'1234',t:'1234',d:.45,a:90,all:1},{n:'Afogar',f:'1234',t:'12',d:1,a:85,e:'stun'},{n:'Canto Úmido',f:'1234',t:'1234',d:0,a:90,st:10}]},
+cego:{n:'O Sineiro Cego',g:'🕳',hp:80,spd:5,dg:6,d:[6,9],p:1,b:1,sk:[{n:'Badalo Cego',f:'1234',t:'12',d:1.2,a:85,e:'bleed'},{n:'Escuta Cruel',f:'1234',t:'1234',d:.4,a:90,st:9},{n:'Golpe às Cegas',f:'1234',t:'123',d:1,a:80}]}});
+function bm(){let m=DN[X.d].m;if(X.d==1){log('🌊 A maré sobe. O fundo se afoga.');X.P.slice().forEach((h,i)=>{if(i>1){hurt(h,3);sx(h,3)}});if(X.r%3==0){X.P.sort(()=>Math.random()-.5);log('A correnteza embaralha o grupo!')}}
+else{X.t=Math.max(0,X.t-8);let h=P(X.P);if(h){h.mk=3;log('🕳 O Sineiro escuta '+h.nm+'.');sx(h,5)}if(X.r%3==0&&X.E.length<4)X.E.push(sp('cul',m))}}
+RG.push(['Recrutamento','Aba 🕯 da vila: 3 classes aleatórias por dia (100💰 cada). Chamar outros três custa 30💰.'],['Itens','Cada herói leva até 2 itens (toque no espaço para equipar ou guardar). Vem de combates, tesouros e chefes, sempre com vantagem e desvantagem. Perdem-se com a morte do herói.'],['Habilidades por nível','Ao subir de nível, heróis desbloqueiam habilidades extras. Em ⚔ Habilidades (cartão do herói) escolha 4 entre as desbloqueadas. O Sangue Demoníaco usa as habilidades das suas duas formas.']);
+const tabs=()=>`<div class=g2 style="grid-template-columns:repeat(3,1fr)">${['🏚 Vila','🕯 Recrutas','🛒 Loja'].map((t,i)=>`<button class="btn${VT==i?' pri':''}" data-a=vt style="font-size:14px;padding:6px 2px" data-v=${i}>${t}</button>`).join('')}</div>`;
+function rcv(){return `<h1>🔔 The Darkest Pit</h1><div class=top><span>Dia ${G.day}</span><span>💰 ${G.gold}</span><span>🗿 ${G.rl}</span><button class=ic data-a=hp>📖</button><button class=ic data-a=mu>${G.mu?'🔇':'🔊'}</button></div>${tabs()}<h2>Recrutamento · ${G.ro.length}/8 heróis</h2><p class=nr>Desesperados batem à porta. Três por dia, nenhum de graça.</p>`+G.rc.map((h,i)=>{let s=st(h),c=CL[h.c];return `<div class=card><button class=ic style="float:right" data-a=fc data-v=${h.id}>ℹ️</button><b>${gl(h)} ${h.nm}</b> <small>${c.n} · PV ${s.hp} · vel ${s.spd} · esq ${s.dg} · crít ${s.cr}%</small><small>${h.q.map(k=>QK[k].n+' ('+qd(QK[k].m)+')').join(' · ')}</small><small style="color:var(--tx)">${c.sk.map(k=>k.n).join(' · ')}</small><button class="btn pri" data-a=hire data-v=${i} ${G.gold<100||G.ro.length>=8?'disabled':''}>Contratar · 100💰</button></div>`}).join('')+`<button class=btn data-a=rr ${G.gold<30?'disabled':''}>Chamar outros três · 30💰</button>`}
+function hpn(h){let it=h.it||[],a=al(h),s='<div class=g2>'+[0,1].map(i=>{let k=it[i];return `<button class=btn data-a=eq data-v=${h.id}:${i}>${k?IT[k].g+' '+IT[k].n:'＋ Item ('+G.inv.length+' no estoque)'}<small>${k?idesc(k)+' · toque p/ guardar':G.inv.length?'toque para equipar':'sem itens'}</small></button>`}).join('')+'</div>';
+if(h.c!='dem'){s+=`<button class=btn data-a=ld data-v=${h.id}>⚔ Habilidades (${a.filter(k=>(k.lv||0)<=h.lv).length}/${a.length})</button>`;
+if(VX==h.id)s+='<div class=g2>'+(h.eq||[0,1,2,3]).map((k,i)=>`<button class="btn pri" data-a=sl data-v=${h.id}:${i}>${i+1}. ${a[k].n}<small>${a[k].lb||'de '+pl(a[k].f)}</small></button>`).join('')+'</div>'+a.map(k=>`<small>${(k.lv||0)>h.lv?'🔒 Nv'+k.lv:'✔'} ${k.n}: ${sde(k)}</small>`).join('')+'<small>Toque num espaço para trocar pela próxima habilidade desbloqueada.</small>'}
+return s}
+/* ===== LOJA, VOZES, FICHA ===== */
+const pr=k=>70+((k.charCodeAt(0)+k.charCodeAt(2))%7)*15+(IT[k].f?40:0),sl=k=>Math.floor(pr(k)/3);
+function gsh(){return Object.keys(IT).sort(()=>Math.random()-.5).slice(0,4)}
+const LJL={hi:['Ah, carne fresca. Digo... clientes.','Tudo tem preço. Principalmente o que salva vidas.','Toquem, olhem... mas paguem.'],buy:['Excelente. Ele já pertenceu a alguém. Não pergunte.','Boa compra. Sobreviver é caro.'],sell:['Hm. Vale uns trocados. Aceito.','Nunca pergunto de onde vem. Nunca.']};
+let LJ={t:'',i:0},LI;
+const VV={sen:[105,'square'],bes:[190,'triangle'],pen:[250,'sine'],ocu:[150,'sawtooth'],lad:[310,'square'],nec:[80,'sawtooth'],dem:[125,'square']};
+const vf=(b,c)=>b*Math.pow(2,(c.toLowerCase().charCodeAt(0)%7)*.14+('aeiouáéíóúâêôãõ'.includes(c.toLowerCase())?.12:0));
+function vb(f,ty,v){if(G.mu||!ax())return;try{let n=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.setValueAtTime(f,n);o.frequency.linearRampToValueAtTime(f*(.97+Math.random()*.06),n+.05);g.gain.setValueAtTime(v||.05,n);g.gain.exponentialRampToValueAtTime(.001,n+.055);o.connect(g);g.connect(MB);o.start(n);o.stop(n+.06)}catch(e){}}
+function voz(h,t){let b=VV[h.c];if(!b)return;let k=[...h.nm].reduce((a,c)=>a+c.charCodeAt(0),0)%5,f=b[0]*Math.pow(2,k/12)*(h.c=='dem'&&h.fm?.6:1);[...t.replace(/[^a-zà-ÿ]/gi,'')].slice(0,24).forEach((c,i)=>setTimeout(()=>vb(vf(f,c),b[1],b[1]=='sawtooth'?.03:.05),i*60))}
+function ljsay(t){LJ.t=t;LJ.i=0;clearInterval(LI);LI=setInterval(()=>{if(LJ.i>=LJ.t.length||VT!=2||scr!='vil')return clearInterval(LI);let c=LJ.t[LJ.i++];if(/[a-zà-ÿ]/i.test(c))vb(vf(230,c),'triangle',.05);let e=$('lj');if(e)e.textContent=LJ.t.slice(0,LJ.i)},48)}
+const hd=()=>`<div class=top><span>Dia ${G.day}</span><span>💰 ${G.gold}</span><span>🗿 ${G.rl}</span><button class=ic data-a=hp>📖</button><button class=ic data-a=mu>${G.mu?'🔇':'🔊'}</button></div>`;
+function shp(){if(!G.sh)G.sh=gsh();return `<h1>🔔 The Darkest Pit</h1>${hd()}${tabs()}<h2>Loja</h2><div class=card><b>🦇 Madame Ossuária</b><p class=nr id=lj>${LJ.t.slice(0,LJ.i)}</p></div>`+G.sh.map(k=>`<button class=btn data-a=buy data-v=${k} ${G.gold<pr(k)?'disabled':''}>${IT[k].g} ${IT[k].n} · ${pr(k)}💰<small>${idesc(k)}</small></button>`).join('')+(G.sh.length?'':'<p class=nr>As prateleiras estão vazias. Volte amanhã.</p>')+`<h2>Seu estoque (${G.inv.length})</h2>`+(G.inv.length?G.inv.map((k,i)=>`<button class=btn data-a=sell data-v=${i}>Vender ${IT[k].g} ${IT[k].n} · +${sl(k)}💰<small>${idesc(k)}</small></button>`).join(''):'<small>Vazio. Itens de combates e chefes também vão parar aqui.</small>')}
+function sheet(u){let h=!!u.c,s=h?st(u):u,mh=h?s.hp:u.mhp,ex=!!(X&&X.P&&X.P.includes(u)&&scr!='vil'),
+sts=[u.bl>0&&'🩸 sangra '+u.bl+'t',u.ps>0&&'☠ veneno '+u.ps+'t',u.sn&&'💫 atordoado',u.mk>0&&'🎯 marcado '+u.mk+'t'].filter(Boolean).join(' · ')||'nenhum',
+sg=a=>'<div class=sg>'+a.map(([k,v])=>`<div><b>${k}</b>${v}</div>`).join('')+'</div>',
+o=`<div><div class=top><h2 style="border:0;margin:0">${h?gl(u):u.g} ${u.nm}</h2><button class=ic data-a=hx>✕</button></div>`;
+if(h){let c=CL[u.c],pos=ex?X.P.indexOf(u)+1:0;
+o+=sg([['Classe',c.n+(u.c=='dem'?(u.fm?' (forma demoníaca)':' (forma humana)'):'')],['Nível',u.lv+'/5'],['PV',u.hp+'/'+s.hp],['Estresse 😨',u.s+'/100'],['Velocidade',s.spd],['Esquiva',s.dg+'%'],['Precisão',(s.ac>=0?'+':'')+s.ac],['Crítico',s.cr+'%'+(u.c=='lad'&&ex&&pos>1?' +7%':'')],['Dano base',Math.round(c.d[0]*s.dm)+'–'+Math.round(c.d[1]*s.dm)],['Mod. de dano','×'+s.dm.toFixed(2)],['Ganho de estresse','×'+s.str.toFixed(2)],['Posição',pos||'—']]);
+if(ex)o+=sg([['Luz da tocha 🔥',X.t+(X.t>=60?' · firme':X.t<=25?' · escuridão':' · fraca')]]);
+o+=sg([['Aflição',u.aff?'☗ '+AF[u.aff].n+': '+AFD[u.aff]:u.res?'✦ Resoluto':'nenhuma'],['Status',sts]]);
+o+=rw('Traços',u.q.map(k=>QK[k].n+' ('+qd(QK[k].m)+')').join('<br>'));
+o+=rw('Itens',(u.it||[]).map(k=>IT[k].g+' '+IT[k].n+' · '+idesc(k)).join('<br>')||'nenhum');
+o+=rw('Habilidades equipadas',sks(u).map(k=>k.n).join(' · '));
+if(u.sq>0)o+=rw('🦴 Esqueleto',u.sq+' PV · guarda '+((G.ro.find(x=>x.id==u.sg)||{}).nm||'?'));
+if(ex&&gd(u))o+=rw('🦴 Protegido','Um esqueleto ('+gd(u).sq+' PV) absorve o dano deste herói.')}
+else{o+=sg([['PV',u.hp+'/'+u.mhp],['Velocidade',u.spd],['Esquiva',u.dg+'%'],['Dano',u.d[0]+'–'+u.d[1]],['Posição',(X&&X.E.indexOf(u)+1)||'—'],['Status',sts]]);o+=u.sk.map(k=>rw(k.n,sde(k))).join('')}
+return o+'<button class=btn data-a=hx>Fechar</button></div>'}
+RG.push(['Ficha ℹ️','Toque no ℹ️ de qualquer herói ou inimigo para ver todos os atributos atuais, status, itens e habilidades.'],['Loja 🛒','Madame Ossuária vende 4 itens por dia (cada um uma vez) e compra os seus por um terço do preço.'],['Vozes','Falas dos heróis e da lojista ganham um “blip” por letra, com timbre próprio de cada classe.']);
+/* ===== TELAS ===== */
+const tp=()=>`<div class=top><span>🔥</span><div class=bar><i class=tc style="width:${X.t}%"></i></div><b>${X.t}</b><button class=ic data-a=hp>📖</button><button class=ic data-a=mu>${G.mu?'🔇':'🔊'}</button></div>`;
+const pty=()=>X.P.map((h,i)=>`<div class=card><button class=ic style="float:right" data-a=fc data-v=${h.id}>ℹ️</button><b>${i+1} ${gl(h)} ${h.nm}</b> <small>PV ${h.hp}/${st(h).hp} · 😨 ${h.s}${h.aff?' · ☗ '+AF[h.aff].n:''}${h.res?' · ✦ Resoluto':''}</small><div class=bar><i class=hp style="width:${100*h.hp/st(h).hp}%"></i></div><div class=bar><i class=sb style="width:${h.s}%"></i></div></div>`).join('');
+function map(){let D=DN[X.d],l=X.ri==D.r-1;return tp()+`<p class=nr>${X.nr}</p><h2>${D.n} · sala ${X.ri+1}/${D.r}</h2>${pty()}`+(l?'<button class="btn pri" data-a=door data-v=b>☠ A câmara do sino</button>':X.dr.map(t=>`<button class=btn data-a=door data-v=${t}>${RT[t]}</button>`).join(''))+'<button class=btn data-a=rt>Retornar à vila</button>'}
+function scs(){return tp()+`<p class=nr>${X.sc.t}</p>${pty()}`+X.sc.o.map(([l,a,v])=>`<button class="btn pri" data-a=${a} data-v=${v==null?'':v}>${l}</button>`).join('')}
+function cmb(){let u=X.cu,k=X.sk,pos=u&&u.c?X.P.indexOf(u)+1:0;
+const uc=(x,i,hs)=>{let s=hs?st(x):x,tg=k&&X.pl&&(hs?k.t=='A':!'AS'.includes(k.t)&&k.t.includes(i+1)),mh=hs?s.hp:x.mhp;
+return `<div id=u${x.id} class="u${tg?' tg':''}${x==u?' cur':''}" data-a=tg data-v=${hs?'h':'e'}${i}><b>${i+1}</b> ${hs?gl(x):x.g} <small style="display:inline">${x.nm}</small><button class=ic style="float:right;font-size:16px" data-a=fc data-v=${x.id}>ℹ️</button><div class=bar><i class=hp style="width:${100*x.hp/mh}%"></i></div>${hs?`<div class=bar><i class=sb style="width:${x.s}%"></i></div>`:''}<small>${x.hp}/${mh}${hs?' 😨'+x.s+(x.aff?' ☗':'')+(x.res?' ✦':'')+(gd(x)?' 🦴'+gd(x).sq:''):''}</small><small>${x.bl>0?'🩸':''}${x.ps>0?'☠':''}${x.sn?'💫':''}${x.mk>0?'🎯':''}</small></div>`};
+let sk=X.pl&&u.c?sks(u):[];
+let bt=X.pl?`<div class=nr>${u.nm} · posição ${pos}${k?' — escolha o alvo':''}</div><div class=g2>${sk.map((q,i)=>`<button class="btn${k==q?' pri':''}" data-a=sk data-v=${i} ${q.f.includes(pos)&&!off(q,u)?'':'disabled'}>${q.n}<small>${q.lb||'de '+q.f.split('').join('/')+' → '+(q.t=='A'?'aliado':q.t=='S'?'si':q.t.split('').join('/'))}</small></button>`).join('')}</div><div class=g4><button class=btn data-a=mv data-v=-1 ${pos<2?'disabled':''}>⬆</button><button class=btn data-a=mv data-v=1 ${pos>=X.P.length?'disabled':''}>⬇</button><button class=btn data-a=ps>⏭</button><button class=btn data-a=fg ${X.bs?'disabled':''}>🏃</button></div><small>⬆⬇ mover · ⏭ passar · 🏃 fugir</small>`:'<div class=nr>… os sons do combate …</div>';
+return tp()+`<small>Rodada ${X.r} · ${X.t>=60?'luz firme':X.t<=25?'ESCURIDÃO':'luz fraca'}</small><div class=cols><div>${X.P.map((h,i)=>uc(h,i,1)).join('')}</div><div>${X.E.map((e,i)=>uc(e,i,0)).join('')}</div></div><div class=nr>${X.lg.slice(-3).join('<br>')}</div>`+bt}
+function end(){let s=X.sm;return `<h1>${['Ruína','Retorno','Retirada'][s.m]}</h1><p class=nr>${P(s.m==1?NR.w:NR.l)}</p><p>💰 +${s.g} · 🗿 +${s.r}</p>${s.bi?`<p>Espólio do chefe: ${IT[s.bi].g} ${IT[s.bi].n}</p>`:''}${(s.ns||[]).map(t=>`<p>✦ ${t}.</p>`).join('')}${s.dd.length?`<p class=bad>Perdidos para sempre: ${s.dd.join(', ')}.</p>`:''}<button class="btn pri" data-a=vl>Voltar à vila</button><button class=btn data-a=hp>📖 Grimório</button>`}
+function hc(h){let s=st(h),c=CL[h.c],i=G.pt.indexOf(h.id),hcs=Math.max(10,40-8*G.b.h);
+return `<div class="card${i>=0?' sel':''}"><button class=ic style="float:right" data-a=fc data-v=${h.id}>ℹ️</button><b>${gl(h)} ${h.nm}</b> <small>${c.n} · nível ${h.lv}${i>=0?' · posição '+(i+1):''}</small><div class=bar><i class=hp style="width:${100*h.hp/s.hp}%"></i></div><div class=bar><i class=sb style="width:${h.s}%"></i></div><small>PV ${h.hp}/${s.hp} · 😨 ${h.s}${h.aff?' · ☗ '+AF[h.aff].n:''}</small><small>${h.q.map(k=>QK[k].n+' ('+qd(QK[k].m)+')').join(' · ')}</small>
+${hpn(h)}<div class=g2><button class=btn data-a=pt data-v=${h.id}>${i>=0?'Tirar do grupo':'Escalar'}</button><button class=btn data-a=heal data-v=${h.id} ${h.hp>=s.hp||G.gold<hcs?'disabled':''}>🏥 Curar ${hcs}💰</button><button class=btn data-a=tav data-v=${h.id} ${!h.s||G.gold<50?'disabled':''}>🍺 Taverna 50💰</button>${h.aff?`<button class=btn data-a=cure data-v=${h.id} ${G.gold<80?'disabled':''}>Tratar aflição 80💰</button>`:''}</div></div>`}
+function vil(){if(VT==1)return rcv();if(VT==2)return shp();return `<h1>🔔 The Darkest Pit</h1><p class=nr>${NR.v[G.day%2]}</p><div class=top><span>Dia ${G.day}</span><span>💰 ${G.gold}</span><span>🗿 ${G.rl}</span><button class=ic data-a=hp>📖</button><button class=ic data-a=mu>${G.mu?'🔇':'🔊'}</button></div>
+${tabs()}<h2>Formação · arraste as caixas (frente → fundo)</h2><div id=fm class=g4>${[0,1,2,3].map(i=>{let h=G.ro.find(x=>x.id==G.pt[i]);return `<div class=sl><small>pos ${i+1}</small>${h?`<div class=hb data-id=${h.id}>${gl(h)}<small>${h.nm}</small></div>`:'<div class=em>vazio</div>'}</div>`}).join('')}</div>${fm0()}${DN.map((d,i)=>`<button class="btn pri" data-a=go data-v=${i} ${i>=G.un||!G.pt.length?'disabled':''}>${i<G.un?'Partir':'🔒'}: ${d.n}<small>${d.r} salas · perigo ×${d.m}</small></button>`).join('')}
+<h2>Heróis (${G.ro.length}/8)</h2>${G.ro.map(hc).join('')}<button class=btn data-a=vt data-v=1>Ir ao recrutamento (100💰)</button>
+<h2>Construções</h2>${[['h','🏥 Hospital','cura mais barata'],['t','🍺 Taverna','mais alívio de estresse'],['f','⚒ Forja','+dano e +PV']].map(([k,n,d])=>{let l=G.b[k];return `<button class=btn data-a=up data-v=${k} ${l>=3||G.gold<(l+1)*120||G.rl<(l+1)*2?'disabled':''}>${n} nv ${l}/3<small>${d} · ${l>=3?'máximo':(l+1)*120+'💰 + '+(l+1)*2+'🗿'}</small></button>`}).join('')}
+<button class="btn${NC?' pri':''}" data-a=nw>${NC?'Toque de novo para apagar tudo':'Novo jogo'}</button>`}
+function render(){mus(scr=='cmb'?1:0);$('app').innerHTML=({vil,map,sc:scs,cmb,end})[scr]()}
+$('hl').onclick=$('app').onclick=e=>{let b=e.target.closest('[data-a]');if(b&&!b.disabled&&A[b.dataset.a]){mst();sfx('tap');A[b.dataset.a](b.dataset.v)}};
+render();
+</script></body></html>
